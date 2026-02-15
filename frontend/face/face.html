@@ -1,0 +1,45 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Online Exam – Face Monitoring</title>
+
+    <link rel="stylesheet" href="face.css" />
+  </head>
+
+  <body>
+
+    <h2>Online Exam – Face Monitoring</h2>
+
+    <div id="liveView" class="videoView">
+      <button id="webcamButton">ENABLE WEBCAM</button>
+
+      <div style="position: relative; width: 480px;">
+        <video
+          id="webcam"
+          autoplay
+          playsinline
+          style="position: absolute; left: 0; top: 0;"
+        ></video>
+
+        <canvas
+          id="output_canvas"
+          class="output_canvas"
+          style="position: absolute; left: 0; top: 0;"
+        ></canvas>
+      </div>
+    </div>
+
+    <div class="blend-shapes">
+      <ul id="video-blend-shapes"></ul>
+    </div>
+
+    <!-- IMPORTANT: type="module" -->
+    <script type="module" src="face.js"></script>
+
+  </body>
+  </html>

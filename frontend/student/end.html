@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Completed</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .result-card {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #28a745;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="result-card">
+            <h1 class="mb-3">Exam Submitted!</h1>
+            <p class="text-muted">You have successfully completed the exam.</p>
+
+            <div class="my-4">
+                <h4>Your Score</h4>
+                <div class="score-display">
+                    <span id="score">--</span> <span class="text-muted fs-4">/ <span id="total">--</span></span>
+                </div>
+            </div>
+
+            <a href="dashboard.html" class="btn btn-primary btn-lg w-100">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Parse query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const score = urlParams.get('score');
+        const total = urlParams.get('total');
+
+        if (score !== null && total !== null) {
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = total;
+        } else {
+            document.querySelector('.result-card').innerHTML = `
+                <h2 class="text-danger">Error</h2>
+                <p>Could not retrieve exam results.</p>
+                <a href="dashboard.html" class="btn btn-secondary">Go Back</a>
+            `;
+        }
+    </script>
+</body>
+
+</html>

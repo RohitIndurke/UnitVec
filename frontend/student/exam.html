@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Exam</title>
+</head>
+
+<body>
+    <h1>Join Exam</h1>
+    <form id="joinExamForm">
+        <input type="text" id="studentName" placeholder="Enter Your Name" required>
+        <input type="text" id="examCode" placeholder="Enter Exam Code" required>
+        <button type="submit">Start Exam</button>
+    </form>
+    <br>
+    <a href="dashboard.html">Back to Dashboard</a>
+
+    <script>
+        document.getElementById("joinExamForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const studentName = document.getElementById("studentName").value;
+            const examCode = document.getElementById("examCode").value;
+
+            if (studentName && examCode) {
+                // Store student name temporarily potentially
+                localStorage.setItem("currentStudentName", studentName);
+                localStorage.setItem("currentExamCode", examCode);
+                // Redirect to start exam page
+                window.location.href = `startexam.html`;
+            } else {
+                alert("Please fill in all fields");
+            }
+        });
+    </script>
+</body>
+
+</html>

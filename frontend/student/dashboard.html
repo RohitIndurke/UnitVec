@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Online Exam System</a>
+            <div class="d-flex">
+                <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-container">
+            <h2 class="text-center mb-4">Join an Exam</h2>
+            <form id="joinExamForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="exam_code" class="form-label">Exam Code</label>
+                    <input type="text" class="form-control" id="exam_code" placeholder="Enter 6-digit code" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Start Exam</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem("user_id") || localStorage.getItem("role") !== "student") {
+            window.location.href = "../login/Student.html";
+        }
+
+        function logout() {
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("role");
+            localStorage.removeItem("currentExamCode");
+            localStorage.removeItem("currentStudentName");
+            window.location.href = "../login/Student.html";
+        }
+
+        document.getElementById("joinExamForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const studentName = document.getElementById("name").value.trim();
+            const examCode = document.getElementById("exam_code").value.trim();
+
+            if (studentName && examCode) {
+                localStorage.setItem("currentStudentName", studentName);
+                localStorage.setItem("currentExamCode", examCode);
+                window.location.href = "startexam.html";
+            } else {
+                alert("Please fill in all fields");
+            }
+        });
+    </script>
+</body>
+
+</html>

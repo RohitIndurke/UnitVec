@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Questions</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .question-form-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../js/teacher-guard.js"></script>
+    <div class="container">
+        <div class="question-form-container">
+            <h2 class="text-center mb-4">Add Questions to Exam</h2>
+            <form id="questionForm">
+                <div class="mb-3">
+                    <label for="exam_code" class="form-label">Exam Code</label>
+                    <input type="text" class="form-control" id="exam_code" placeholder="Enter Exam Code" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="question_text" class="form-label">Question Text</label>
+                    <textarea class="form-control" id="question_text" rows="3" placeholder="Enter the question here..."
+                        required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="option1" class="form-label">Option 1</label>
+                        <input type="text" class="form-control" id="option1" placeholder="First option" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="option2" class="form-label">Option 2</label>
+                        <input type="text" class="form-control" id="option2" placeholder="Second option" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="option3" class="form-label">Option 3</label>
+                        <input type="text" class="form-control" id="option3" placeholder="Third option" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="option4" class="form-label">Option 4</label>
+                        <input type="text" class="form-control" id="option4" placeholder="Fourth option" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="correct_option" class="form-label">Correct Answer</label>
+                    <select class="form-select" id="correct_option" required>
+                        <option value="" selected disabled>Select the correct option</option>
+                        <option value="0">Option 1</option>
+                        <option value="1">Option 2</option>
+                        <option value="2">Option 3</option>
+                        <option value="3">Option 4</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Add Question</button>
+            </form>
+            <div class="mt-3 text-center">
+                <a href="dashboard.html" class="text-decoration-none">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check if there's an exam code in query param or localStorage to pre-fill
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            document.getElementById('exam_code').value = code;
+            document.getElementById('exam_code').readOnly = true;
+        }
+
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const exam_code = document.getElementById('exam_code').value;
+            const question_text = document.getElementById('question_text').value;
+            const options = [
+                document.getElementById('option1').value,
+                document.getElementById('option2').value,
+                document.getElementById('option3').value,
+                document.getElementById('option4').value
+            ];
+            const correct_option = parseInt(document.getElementById('correct_option').value);
+
+            try {
+                const response = await fetch('http://localhost:3000/exams/question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        exam_code,
+                        question_text,
+                        options,
+                        correct_option
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Question added successfully!');
+
+                    document.getElementById('question_text').value = '';
+                    document.getElementById('option1').value = '';
+                    document.getElementById('option2').value = '';
+                    document.getElementById('option3').value = '';
+                    document.getElementById('option4').value = '';
+                    document.getElementById('correct_option').value = '';
+                } else {
+                    alert('Error adding question: ' + (data.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error failed to add question.');
+            }
+        });
+    </script>
+</body>
+
+</html>

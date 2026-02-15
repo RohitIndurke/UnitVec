@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .result-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../js/teacher-guard.js"></script>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">Teacher Portal</a>
+            <div class="d-flex">
+                <a href="dashboard.html" class="btn btn-outline-light me-2">Dashboard</a>
+                <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="result-container">
+            <h2 class="text-center mb-4">View Exam Results</h2>
+
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" id="examCodeInput" class="form-control"
+                            placeholder="Enter Exam Code (e.g. 123456)">
+                        <button class="btn btn-primary" type="button" onclick="fetchResults()">Get Results</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultsTableContainer" style="display: none;">
+                <h4 id="examTitle" class="mb-3 text-secondary">Results for Exam: <span id="displayCode"></span></h4>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Student Name</th>
+                                <th>Roll No</th>
+                                <th>Score</th>
+                                <th>Submitted At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <!-- Results will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noResultsMsg" class="alert alert-info text-center" style="display: none;">
+                    No results found for this exam yet.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logout() {
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("role");
+            window.location.href = "../login/Teacher.html";
+        }
+
+        async function fetchResults() {
+            const code = document.getElementById('examCodeInput').value.trim();
+            if (!code) {
+                alert("Please enter an exam code.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/results/${code}`); // Note: path must match backend route
+                // Wait, I put path as /:exam_code in results.js, but app.use("/results", resultRoutes) in server.js
+                // So the full path is /results/:exam_code. Correct.
+
+                if (response.status === 404) {
+                    alert("Exam code not found!");
+                    document.getElementById('resultsTableContainer').style.display = 'none';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch results");
+                }
+
+                const data = await response.json();
+
+                document.getElementById('displayCode').textContent = code;
+                document.getElementById('resultsTableContainer').style.display = 'block';
+
+                const tbody = document.getElementById('resultsBody');
+                const noResultsMsg = document.getElementById('noResultsMsg');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    noResultsMsg.style.display = 'block';
+                    document.querySelector('table').style.display = 'none';
+                } else {
+                    noResultsMsg.style.display = 'none';
+                    document.querySelector('table').style.display = 'table';
+
+                    data.forEach((row, index) => {
+                        const tr = document.createElement('tr');
+                        const date = new Date(row.submitted_at).toLocaleString();
+
+                        tr.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${row.student_name}</td>
+                            <td>${row.roll_no || 'N/A'}</td>
+                            <td><span class="badge bg-success fs-6">${row.score}</span></td>
+                            <td><small class="text-muted">${date}</small></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("Error fetching results. See console for details.");
+            }
+        }
+    </script>
+</body>
+
+</html>
