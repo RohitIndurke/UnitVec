@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Exam</title>
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- ✅ FACE MONITORING CSS -->
+    <link rel="stylesheet" href="face.css">
+
     <style>
         body {
             background-color: #f8f9fa;
@@ -42,15 +47,10 @@
             cursor: pointer;
             padding: 10px;
             border-radius: 5px;
-            transition: background-color 0.2s;
         }
 
         .option-label:hover {
             background-color: #e9ecef;
-        }
-
-        .option-input {
-            margin-right: 10px;
         }
 
         #timer {
@@ -65,200 +65,158 @@
             font-weight: bold;
             border-radius: 5px;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="exam-container">
-            <h2 id="examTitle" class="text-center mb-4">Loading Exam...</h2>
+<div class="container">
+    <div class="exam-container">
 
-            <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+      <!-- FACE MONITORING -->
+<div id="liveView" class="videoView">
+    <button id="webcamButton" class="btn btn-warning btn-sm">
+        ENABLE CAM
+    </button>
 
-            <form id="examForm" style="display:none;">
-                <div id="questionsContainer"></div>
-                <button type="submit" class="btn btn-success w-100 mt-4 py-2" style="font-size: 1.2rem;">Submit
-                    Exam</button>
-            </form>
-        </div>
+    <div style="position: relative;">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="output_canvas" class="output_canvas"></canvas>
     </div>
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const examCode = localStorage.getItem('currentExamCode');
-            const studentName = localStorage.getItem('currentStudentName');
 
-            if (!examCode) {
-                showError('No exam code found in local session. Please go back and join.');
-                return;
-            }
+        <div class="blend-shapes">
+            <ul id="video-blend-shapes"></ul>
+        </div>
+        <!-- ✅ FACE MONITORING BLOCK END -->
 
-            try {
-                const response = await fetch(`http://localhost:3000/exams/${examCode}`);
-                if (!response.ok) {
-                    throw new Error(response.status === 404 ? 'Exam not found' : 'Failed to load exam');
-                }
+        <h2 id="examTitle" class="text-center mb-4">Loading Exam...</h2>
 
-                const data = await response.json();
-                const { exam, questions } = data;
+        <div id="errorMessage" class="alert alert-danger" style="display:none;"></div>
 
-                document.getElementById('examTitle').textContent = exam.title || exam.name || 'Untitled Exam';
+        <form id="examForm" style="display:none;">
+            <div id="questionsContainer"></div>
+            <button type="submit" class="btn btn-success w-100 mt-4 py-2">
+                Submit Exam
+            </button>
+        </form>
 
-                // Start Timer
-                if (exam.duration_minutes) {
-                    startTimer(exam.duration_minutes);
-                } else {
-                    console.log("No duration set for this exam.");
-                }
+    </div>
+</div>
 
-                const questionsContainer = document.getElementById('questionsContainer');
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-                if (questions.length === 0) {
-                    questionsContainer.innerHTML = '<div class="alert alert-warning">No questions in this exam.</div>';
-                } else {
-                    questions.forEach((q, index) => {
-                        const questionDiv = document.createElement('div');
-                        questionDiv.className = 'question-block';
+<script>
+    let webcamEnabled = false;
 
-                        // Question Text
-                        const qText = document.createElement('div');
-                        qText.className = 'question-text';
-                        qText.textContent = `${index + 1}. ${q.question_text}`;
-                        questionDiv.appendChild(qText);
+    document.getElementById("webcamButton").addEventListener("click", () => {
+        webcamEnabled = true;
+    });
 
-                        // Options
-                        let options = q.options;
-                        if (typeof options === 'string') {
-                            try { options = JSON.parse(options); } catch (e) { console.error('Error parsing options', e); }
-                        }
+    document.addEventListener('DOMContentLoaded', async () => {
+        const examCode = localStorage.getItem('currentExamCode');
 
-                        if (Array.isArray(options)) {
-                            options.forEach((opt, optIndex) => {
-                                const label = document.createElement('label');
-                                label.className = 'option-label form-check';
-
-                                const radio = document.createElement('input');
-                                radio.type = 'radio';
-                                radio.className = 'form-check-input option-input';
-                                radio.name = `question_${q.question_id}`;
-                                radio.value = optIndex;
-
-                                label.appendChild(radio);
-                                label.appendChild(document.createTextNode(` ${opt}`));
-                                questionDiv.appendChild(label);
-                            });
-                        } else {
-                            questionDiv.appendChild(document.createTextNode('Invalid options format'));
-                        }
-
-                        questionsContainer.appendChild(questionDiv);
-                    });
-                }
-
-                document.getElementById('examForm').style.display = 'block';
-
-            } catch (err) {
-                console.error(err);
-                showError(err.message);
-            }
-        });
-
-        function showError(msg) {
-            const el = document.getElementById('errorMessage');
-            el.textContent = msg;
-            el.style.display = 'block';
-            document.getElementById('examTitle').textContent = 'Error';
+        if (!examCode) {
+            showError('No exam code found.');
+            return;
         }
 
-        function startTimer(durationMinutes) {
-            let timer = durationMinutes * 60;
-            const timerDisplay = document.createElement('div');
-            timerDisplay.id = 'timer';
-            document.body.appendChild(timerDisplay);
+        try {
+            const response = await fetch(`http://localhost:3000/exams/${examCode}`);
+            if (!response.ok) throw new Error("Exam not found");
 
-            const interval = setInterval(function () {
-                const minutes = parseInt(timer / 60, 10);
-                const seconds = parseInt(timer % 60, 10);
+            const { exam, questions } = await response.json();
+            document.getElementById('examTitle').textContent = exam.title || "Exam";
 
-                const displayMinutes = minutes < 10 ? "0" + minutes : minutes;
-                const displaySeconds = seconds < 10 ? "0" + seconds : seconds;
+            if (exam.duration_minutes) startTimer(exam.duration_minutes);
 
-                timerDisplay.textContent = displayMinutes + ":" + displaySeconds;
+            const qc = document.getElementById('questionsContainer');
 
-                if (timer < 60) {
-                    timerDisplay.style.color = "#dc3545";
-                    timerDisplay.style.borderColor = "#dc3545";
-                }
+            questions.forEach((q, i) => {
+                const div = document.createElement('div');
+                div.className = 'question-block';
 
-                if (--timer < 0) {
-                    clearInterval(interval);
-                    timerDisplay.textContent = "00:00";
-                    alert("Time's up! Submitting exam automatically.");
-                    submitExam();
-                }
-            }, 1000);
-        }
+                div.innerHTML = `<div class="question-text">${i + 1}. ${q.question_text}</div>`;
 
-        async function submitExam() {
-            const timer = document.getElementById('timer');
-            if (timer) timer.remove();
-
-            const examCode = localStorage.getItem('currentExamCode');
-            const studentId = localStorage.getItem('user_id');
-
-            if (!studentId) {
-                alert("Error: Student ID not found. Please login again.");
-                return;
-            }
-
-            const answers = {};
-            const inputs = document.querySelectorAll('input[type="radio"]:checked');
-            inputs.forEach(input => {
-                const part = input.name.split('_');
-                if (part.length === 2) {
-                    answers[part[1]] = input.value;
-                }
-            });
-
-            try {
-                const response = await fetch('http://localhost:3000/results/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        student_id: studentId,
-                        exam_code: examCode,
-                        answers: answers
-                    })
+                let opts = typeof q.options === "string" ? JSON.parse(q.options) : q.options;
+                opts.forEach((opt, idx) => {
+                    div.innerHTML += `
+                      <label class="option-label form-check">
+                        <input type="radio" class="form-check-input" 
+                               name="question_${q.question_id}" value="${idx}">
+                        ${opt}
+                      </label>`;
                 });
 
-                const data = await response.json();
-                if (response.ok) {
+                qc.appendChild(div);
+            });
 
-                    localStorage.removeItem('currentExamCode');
-                    window.location.href = `end.html?score=${data.score}&total=${data.total}`;
-                } else {
-                    alert('Submission failed: ' + (data.error || 'Unknown error'));
-                }
-
-            } catch (err) {
-                console.error(err);
-                alert('Network error failed to submit exam.');
-            }
+            document.getElementById('examForm').style.display = 'block';
+        } catch (err) {
+            showError(err.message);
         }
+    });
 
-        document.getElementById('examForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (confirm("Are you sure you want to submit?")) {
+    function showError(msg) {
+        const el = document.getElementById('errorMessage');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+
+    function startTimer(min) {
+        let t = min * 60;
+        const d = document.createElement('div');
+        d.id = 'timer';
+        document.body.appendChild(d);
+
+        const i = setInterval(() => {
+            d.textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+            if (--t < 0) {
+                clearInterval(i);
+                alert("Time's up!");
                 submitExam();
             }
-        });
-    </script>
-</body>
+        }, 1000);
+    }
 
+    async function submitExam() {
+        if (!webcamEnabled) {
+            alert("Webcam must be enabled.");
+            return;
+        }
+
+        const studentId = localStorage.getItem('user_id');
+        const examCode = localStorage.getItem('currentExamCode');
+
+        const answers = {};
+        document.querySelectorAll("input[type=radio]:checked").forEach(i => {
+            answers[i.name.split('_')[1]] = i.value;
+        });
+
+        const res = await fetch("http://localhost:3000/results/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student_id: studentId, exam_code: examCode, answers })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            window.location.href = `end.html?score=${data.score}&total=${data.total}`;
+        } else {
+            alert(data.error || "Submission failed");
+        }
+    }
+
+    document.getElementById("examForm").addEventListener("submit", e => {
+        e.preventDefault();
+        if (confirm("Submit exam?")) submitExam();
+    });
+</script>
+
+<!-- ✅ FACE MONITORING SCRIPT -->
+<script type="module" src="face.js"></script>
+
+</body>
 </html>
