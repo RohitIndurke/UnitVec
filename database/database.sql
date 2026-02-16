@@ -28,7 +28,8 @@ CREATE TABLE exams (
   title VARCHAR(100) NOT NULL,
   teacher_id INT REFERENCES teachers(teacher_id) ON DELETE SET NULL,
   duration_minutes INT NOT NULL,
-  total_marks INT NOT NULL
+  total_marks INT NOT NULL,
+  exam_code VARCHAR(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE questions (
