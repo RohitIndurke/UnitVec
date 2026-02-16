@@ -237,13 +237,19 @@
                     })
                 });
 
-                const data = await response.json();
                 if (response.ok) {
-
+                    const data = await response.json();
                     localStorage.removeItem('currentExamCode');
                     window.location.href = `end.html?score=${data.score}&total=${data.total}`;
                 } else {
-                    alert('Submission failed: ' + (data.error || 'Unknown error'));
+                    const data = await response.json();
+                    if (data.error && (data.error.includes("foreign key constraint") || data.error.includes("violates foreign key"))) {
+                        alert("Session invalid or expired. Please login again.");
+                        localStorage.clear();
+                        window.location.href = "../login/Student.html";
+                    } else {
+                        alert('Submission failed: ' + (data.error || 'Unknown error'));
+                    }
                 }
 
             } catch (err) {

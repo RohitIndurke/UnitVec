@@ -3,20 +3,41 @@
 A simple exam platform where teachers can create exams and students can take them using a generated code.
 
 ## Prerequisites
-- Node.js installed
-- MongoDB installed and running locally on port 27017
+
+### Windows
+- PHP 8.0+ installed and added to PATH
+- PostgreSQL installed and running locally
+- PHP extensions enabled in `php.ini`: `pdo_pgsql`, `pgsql`
+
+### Linux (Ubuntu/Debian)
+- PHP 8.0+ installed: `sudo apt install php php-pgsql php-pdo-pgsql`
+- PostgreSQL installed: `sudo apt install postgresql postgresql-contrib`
 
 ## Setup Instructions
 
-1. **Backend Setup**
-   - Open a terminal in `d:\online-exam\backend`
-   - Run: `npm install`
-   - Start the server: `npm start` (or `node server.js`)
-   - The server will run on `http://localhost:3000`
+### Database Setup
+1. Create a database named `online_exam` in PostgreSQL.
+2. Import the schema:
+   ```bash
+   psql -U postgres -d online_exam -f database/database.sql
+   ```
+   *(Adjust username `-U` as needed)*
 
-2. **Frontend Setup**
-   - Open `d:\online-exam\frontend\index.html` in your web browser.
-   - Alternatively, you can use a live server extension in VS Code.
+### Running the Application
+
+#### Windows
+1. Double-click `run_php.bat` to start the server.
+2. The application will be available at `http://localhost:3000`.
+
+#### Linux / Mac
+1. Open a terminal in the project root.
+2. Start the PHP built-in server:
+   ```bash
+   php -S localhost:3000 -t frontend backend/router.php
+   ```
+3. Open your browser and navigate to `http://localhost:3000`.
+
+
 
 ## Usage Guide
 
