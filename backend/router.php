@@ -1,7 +1,5 @@
 <?php
-// backend_php/router.php
 
-// Handle CORS
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
@@ -10,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Serve static files directly
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 if ($path === '/' || $path === '') {
     $path = '/index.html';
@@ -19,7 +16,6 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $path) && is_file($_SERVER['DOCUMENT
     return false;
 }
 
-// DB Connection
 require_once __DIR__ . '/db.php';
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
