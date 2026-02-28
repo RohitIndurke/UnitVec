@@ -1,0 +1,7 @@
+
+# 1. Install PHP and required database drivers
+sudo apt install php php-pgsql php-pdo-pgsql php-mbstring -y
+
+# 2. Start the application server
+php -S localhost:3000 -t frontend backend/router.php
+
