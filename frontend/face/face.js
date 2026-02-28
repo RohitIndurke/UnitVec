@@ -16,7 +16,6 @@ let lastVideoTime = -1;
 const videoWidth = 480;
 const drawingUtils = new DrawingUtils(canvasCtx);
 
-/* ---------------- CREATE LANDMARKER ---------------- */
 
 async function createFaceLandmarker() {
   const resolver = await FilesetResolver.forVisionTasks(

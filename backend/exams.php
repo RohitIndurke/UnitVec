@@ -1,13 +1,11 @@
 <?php
-// backend_php/exams.php
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (empty($path_parts) || !isset($path_parts[1])) {
-        // GET /exams
+        
         $stmt = $pdo->query("SELECT * FROM exams");
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
     } else {
-        // GET /exams/:code
         $code = $path_parts[1];
         
         $stmt = $pdo->prepare("SELECT * FROM exams WHERE exam_code = ?");
@@ -35,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $action = $path_parts[1] ?? '';
 
     if ($action === 'create') {
-        // Create Exam
         $name = $input['name'];
         $code = $input['exam_code'];
         $teacherId = $input['teacher_id'];
