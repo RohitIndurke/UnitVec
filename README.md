@@ -32,8 +32,8 @@ A simple exam platform where teachers can create exams and students can take the
 #### Linux / Mac
 1. Open a terminal in the project root.
 2. Start the PHP built-in server:
-   ```bash
-   php -S localhost:3000 -t frontend backend/router.php
+   ```bash php -S localhost:3000 -t frontend backend/router.php
+  
    ```
 3. Open your browser and navigate to `http://localhost:3000`.
 
