@@ -4,111 +4,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>unitVec</title>
+    <title>unitVec — Secure Online Examination System</title>
+    <meta name="description"
+        content="A minimalist, secure, and intuitive platform for conducting and managing online examinations for students and educators.">
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="./favicon.ico">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
 
-        .hero-section {
-            padding: 100px 0;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            margin-bottom: 50px;
-        }
-
-        .feature-card {
-            transition: transform 0.3s;
-            height: 100%;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-    </style>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="./css/index.css">
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">unitVec</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./login/Student.html">Student Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./login/Teacher.html">Teacher Login</a>
-                    </li>
-                </ul>
-            </div>
+    <!-- Navigation -->
+    <header class="nav" id="main-nav">
+        <div class="container nav__container">
+            <a href="#" class="nav__logo" id="logo-link">unitVec</a>
+            <nav class="nav__links">
+                <a href="./login/Student.html" class="nav__link" id="student-login-nav">Student Portal</a>
+                <a href="./login/Teacher.html" class="nav__link" id="teacher-login-nav">Teacher Portal</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="container">
-            <h1 class="display-4 fw-bold">Welcome to Online Exam System</h1>
-            <p class="lead mb-4">A secure and easy-to-use platform for conducting online examinations.</p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="./login/Student.html" class="btn btn-light btn-lg px-4">Student Login</a>
-                <a href="./login/Teacher.html" class="btn btn-outline-light btn-lg px-4">Teacher Login</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="container mb-5">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="card feature-card shadow-sm">
-                    <div class="card-body p-4">
-                        <h3 class="card-title text-primary">For Students</h3>
-                        <p class="card-text">
-                            - Easy registration<br>
-                            - Join exams with a simple code<br>
-                            - Real-time timer<br>
-                            - Instant results
-                        </p>
-                        <a href="./register/Student.html" class="btn btn-outline-primary">Register as Student</a>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="hero-section">
+            <div class="container grid">
+                <div class="hero__content">
+                    <h1>The Future of <br><span
+                            style="background: var(--color-yellow); -webkit-text-stroke: 1px var(--color-black);">Secure
+                            Exams</span></h1>
+                    <p>Experience a minimalist, robust, and lightning-fast platform designed to take the stress out of
+                        online assessments for both students and teachers.</p>
+                    <div class="hero__cta">
+                        <a href="./login/Student.html" class="btn btn--primary" id="hero-student-cta">Start an Exam</a>
+                        <a href="./login/Teacher.html" class="btn btn--outline" id="hero-teacher-cta">Access
+                            Dashboard</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card feature-card shadow-sm">
-                    <div class="card-body p-4">
-                        <h3 class="card-title text-success">For Teachers</h3>
-                        <p class="card-text">
-                            - Create and manage exams<br>
-                            - Add multiple-choice questions<br>
-                            - Monitor student performance<br>
-                            - Secure environment
-                        </p>
-                        <a href="./register/Teacher.html" class="btn btn-outline-success">Register as Teacher</a>
-                    </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features-section">
+            <div class="container grid" style="padding: 0;">
+                <div class="feature-card">
+                    <h2 class="feature-card__title">For Students</h2>
+                    <ul class="feature-card__list">
+                        <li>Seamless Registration</li>
+                        <li>Direct Exam Join via Code</li>
+                        <li>High-Precision Timer</li>
+                        <li>Instant Result Visualization</li>
+                    </ul>
+                    <a href="./register/Student.html" class="btn btn--outline"
+                        style="width: 100%; border: 2px solid var(--color-black);" id="register-student-btn">Join as
+                        Student</a>
+                </div>
+
+                <div class="feature-card">
+                    <h2 class="feature-card__title">For Teachers</h2>
+                    <ul class="feature-card__list">
+                        <li>Advanced Exam Management</li>
+                        <li>Rich Question Builder</li>
+                        <li>Real-time Performance Analytics</li>
+                        <li>Cheat-Proof Secure Environment</li>
+                    </ul>
+                    <a href="./register/Teacher.html" class="btn btn--outline"
+                        style="width: 100%; border: 2px solid var(--color-black);" id="register-teacher-btn">Register as
+                        Teacher</a>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <div class="container">
-            <p class="mb-0">&copy; 2026 Online Exam System. All rights reserved.</p>
+    <footer class="footer" id="main-footer">
+        <div class="container footer__content">
+            <p style="font-size: 0.9rem; font-weight: 500;">&copy; 2026 unitVec. All rights reserved.</p>
+            <div class="footer__links">
+                <span
+                    style="font-family: var(--font-heading); font-weight: 800; font-size: 1.2rem; background: var(--color-yellow); padding: 0 4px;">UV</span>
+            </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script>
+        // Static navigation
+    </script>
 </body>
 
 </html>
