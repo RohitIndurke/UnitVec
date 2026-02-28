@@ -63,10 +63,10 @@
                     <label for="correct_option" class="form-label">Correct Answer</label>
                     <select class="form-select" id="correct_option" required>
                         <option value="" selected disabled>Select the correct option</option>
-                        <option value="0">Option 1</option>
-                        <option value="1">Option 2</option>
-                        <option value="2">Option 3</option>
-                        <option value="3">Option 4</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                        <option value="4">Option 4</option>
                     </select>
                 </div>
 
@@ -88,6 +88,18 @@
             document.getElementById('exam_code').value = code;
             document.getElementById('exam_code').readOnly = true;
         }
+
+        // Dynamically update dropdown labels as user types options
+        const optionInputs = ['option1', 'option2', 'option3', 'option4'];
+        const correctOptionSelect = document.getElementById('correct_option');
+
+        optionInputs.forEach((id, index) => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                const optionValue = e.target.value.trim();
+                const selectOption = correctOptionSelect.options[index + 1];
+                selectOption.textContent = optionValue || `Option ${index + 1}`;
+            });
+        });
 
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -126,6 +138,11 @@
                     document.getElementById('option3').value = '';
                     document.getElementById('option4').value = '';
                     document.getElementById('correct_option').value = '';
+
+                    // Reset dropdown labels
+                    optionInputs.forEach((id, index) => {
+                        correctOptionSelect.options[index + 1].textContent = `Option ${index + 1}`;
+                    });
                 } else {
                     alert('Error adding question: ' + (data.error || 'Unknown error'));
                 }
